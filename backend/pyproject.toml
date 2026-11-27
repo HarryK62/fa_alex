@@ -1,0 +1,20 @@
+[project]
+name = "backend"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "alex-database",
+    "langfuse>=5.2.0",
+    "openai-agents>=0.3.0",
+    "openinference-instrumentation-openai-agents>=2.8.7",
+    "python-dotenv>=1.1.1",
+]
+
+[tool.uv.workspace]
+members = [
+    "database",
+    "api",
+]
+
+[tool.uv.sources]
+alex-database = { workspace = true }

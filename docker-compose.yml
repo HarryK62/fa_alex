@@ -1,0 +1,27 @@
+# Local Postgres + pgvector: the app database and the knowledge base.
+# Separate container and volume names from the original alex folder, so the two never share data.
+# Start with: docker compose up -d   (scripts/start_local.py does this for you)
+# The SQL files only run the first time, when the data volume is empty.
+name: fa-alex
+services:
+  postgres:
+    image: pgvector/pgvector:pg17
+    container_name: fa-alex-postgres
+    environment:
+      POSTGRES_USER: alex
+      POSTGRES_PASSWORD: alex
+      POSTGRES_DB: alex
+    ports:
+      - "5432:5432"
+    volumes:
+      - fa-alex-pgdata:/var/lib/postgresql/data
+      - ./backend/database/migrations/001_schema.sql:/docker-entrypoint-initdb.d/001_schema.sql:ro
+      - ./backend/database/local/002_vectors.sql:/docker-entrypoint-initdb.d/002_vectors.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U alex -d alex"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+volumes:
+  fa-alex-pgdata:
